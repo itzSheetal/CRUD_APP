@@ -1,5 +1,5 @@
 const express = require("express");
-const port = 8080;
+const port = process.env.PORT || 8070;
 const user_model = require("./users_module");
 const User = user_model.User;
 const app = express();
@@ -7,12 +7,23 @@ app.use(express.json());
 var cors = require('cors');
 app.use(cors());
 app.get("/", (req, res) => {
-res.send("Hello Friends..");
+res.sendFile(__dirname +'/add.html');
 });
+app.get("/index.html", async (req, res) => {
+    res.sendFile(__dirname +'/index.html');
+    });
+    
+app.get("/edit.html", async (req, res) => {
+        res.sendFile(__dirname +'/edit.html');
+        });
 app.get("/user", async (req, res) => {
 let data = await User.find().sort({_id:-1});
 res.send(data);
 });
+
+app.get("/add.html", (req, res) => {
+    res.sendFile(__dirname +'/add.html');
+    });
 app.get("/user/:id", async (req, res) => {
 console.log(req.params.id);
 let data = await User.find({"_id": req.params.id});
@@ -40,6 +51,6 @@ app.delete("/user", async(req, res) => {
 let d_data = await User.deleteOne({"_id": req.body._id});
 res.send(d_data);
 });
-app.listen(process.env.PORT || port, () => {
+app.listen(port, () => {
 console.log(`Listening on port ${port}`);
 });
